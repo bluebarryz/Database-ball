@@ -2,27 +2,40 @@ from h2o_wave import main, app, Q, ui, data
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+import math
 
 players = [["Ted Williams", "tedWil"], ["Mike Trout", 'trout']]
-stategories = ['Year', 'Age', 'BA', 'HR', 'RBI', 'OBP', 'SLG', 'OPS', 'OPS_Plus', ]
+stategories = ['Year', 'Age', 'G', 'BA', 'HR', 'RBI', 'OBP', 'SLG', 'OPS', 'OPS_Plus', 'Awards']
 
 """['Jackie Robinson', 'robinson'], 
     ['Albert Pujols', 'pujols'], ['Babe Ruth', 'ruth'], ['Hank Aaron', 'aaron'], 
     ['Larry Walker', 'walker']]"""
 
 player_sheets = {}
+qq_sheets = {}
 
 def load_data(file):
     data = pd.read_csv(f'player_data/{file}.csv', na_filter=False)
     return data
 
+def QQ_metric(ops_plus, games):
+    return round( ops_plus*(-2**(-(games/27))+1)**4 )
+
 for player in players:
     loaded_data = load_data(player[1])
     player_sheets.setdefault(player[0], loaded_data.loc[:len(loaded_data)-3, stategories])
-#df_bar = df.loc[:18, ['Year', 'BA', 'HR', 'RBI', 'OBP', 'SLG', 'OPS', 'OPS_Plus', 'Age']]
 
-# df_bar = player_sheets['Ted Williams'])
-#df = load_data()
+    qq_data = {
+        "Year": player_sheets[player[0]]["Year"],
+        "Age": player_sheets[player[0]]["Age"],
+        "QQ Metric": [QQ_metric(a,b) for a,b in zip(player_sheets[player[0]]['OPS_Plus'], 
+                                                    player_sheets[player[0]]['G'])],
+        "Games": player_sheets[player[0]]["G"],
+        "OPS+": player_sheets[player[0]]["OPS_Plus"],
+        
+    }
+    qq_sheets.setdefault(player[0], pd.DataFrame(qq_data))
+
 
 
 
@@ -31,19 +44,21 @@ async def serve(q:Q):
     print(q.args.stat_category, q.args.player_dropdown)
     if not q.client.initialized:
         initialize_ui(q)
+        player_dropdown(q)
         graph_view(q, q.client.df)
+        qq_table(q, q.client.df_qq)
+
     if q.args.graph:
         graph_view(q, q.client.df)
     elif q.args.table:
         table_view(q, q.client.df)    
     elif q.args.player_dropdown:
-        print("ayyy")
         q.client.player = q.args.player_dropdown
         q.client.df = player_sheets[q.client.player]
-        q.page["graph_view"]
+        q.client.df_qq = qq_sheets[q.client.player]
         graph_view(q, q.client.df)  
+        qq_table(q, q.client.df_qq)
     elif q.args.stat_category or q.args.time:
-        print("yesh")
         q.client.stat_category = q.args.stat_category
         q.client.time = q.args.time
         graph_view(q, q.client.df)
@@ -61,9 +76,10 @@ def initialize_ui(q):
                 breakpoint="xs",
                 zones=[
                     ui.zone('entirePage',  direction=ui.ZoneDirection.ROW, zones=[
-                        ui.zone('universal', direction=ui.ZoneDirection.COLUMN, size="25%", zones=[
-                            ui.zone('header',size="25%"),
+                        ui.zone('universal', direction=ui.ZoneDirection.COLUMN, size="45%", zones=[
+                            ui.zone('header',size="15%"),
                             ui.zone('players'),
+                            ui.zone('qq_data')
                         ]),
 
                         # ui.zone('stats', size="70%"),
@@ -89,21 +105,22 @@ def initialize_ui(q):
         icon_color='$white',
     )
 
-    # q.page['links'] = ui.form_card(
-    #     box='links',
-    #     items=[
-    #         ui.link(label='Ted Williams', path='/ted_williams'),
-    #         ui.link(label='Mike Trout', path='/mike_trout'),
-    #         ui.link(label='Internal link, new tab', path='/starred', target='_blank'),  # same as target=''
-    #         ui.link(label='Internal link, disabled', path='/starred', disabled=True),
-    #         ui.link(label='External link', path='https://h2o.ai'),
-    #         ui.link(label='External link, new tab', path='https://h2o.ai', target=''),
-    #         ui.link(label='External link, new tab', path='https://h2o.ai', target='_blank'),  # same as target=''
-    #         ui.link(label='External link, disabled', path='https://h2o.ai', disabled=True),
-    #         ui.link(label='Download link', path='https://file-examples-com.github.io/uploads/2017/02/file-sample_100kB.doc', download=True),
-    #     ]
-    # )
+    q.page['tabs'] = ui.tab_card(
+        box = 'tabs',
+        items=[
+            ui.tab(name="graph", label="Graph View"),
+            ui.tab(name="table", label="Table View")
+        ]
+    )
+    q.client.initialized = True
+    q.client.stat_category = 'HR'
+    q.client.time = 'Age'
+    q.client.player = 'Ted Williams'
+    q.client.df = player_sheets[q.client.player]
+    q.client.df_qq = qq_sheets[q.client.player]
 
+
+def player_dropdown(q):
     q.page['players'] = ui.form_card(
         box="players",
         items=[
@@ -120,20 +137,22 @@ def initialize_ui(q):
     )
 
 
-    q.page['tabs'] = ui.tab_card(
-        box = 'tabs',
+
+def qq_table(q, df_qq):
+    q.page["qq_table"] = ui.form_card(
+        box='qq_data', 
         items=[
-            ui.tab(name="graph", label="Graph View"),
-            ui.tab(name="table", label="Table View")
-        ]
-    )
-    q.client.initialized = True
-    q.client.stat_category = 'HR'
-    q.client.time = 'Age'
-    q.client.player = 'Ted Williams'
-    q.client.df = player_sheets[q.client.player]
-
-
+            ui.table(
+                name='qq table',
+                columns=[ui.table_column(name=col, label=col) for col in df_qq.columns],
+                rows=[ui.table_row(
+                    name=str(i),
+                    cells=[str(df_qq[col].values[i]) for col in df_qq.columns]
+                )
+                for i in range(len(df_qq))],
+                downloadable = True,
+            )
+    ])
 
 def table_view(q, df):
     del q.page["graph_view"], q.page["statsDropdown"]
@@ -155,9 +174,6 @@ def table_view(q, df):
     ])
 
 
-#df_bar = df.loc[:18, ['Year', 'BA', 'HR', 'RBI', 'OBP', 'SLG', 'OPS', 'OPS_Plus', 'Age']]
-
-
 def graph_view(q, df):
     del q.page["table_view"]
 
@@ -170,7 +186,7 @@ def graph_view(q, df):
                     label='y-axis (Stat Category)',
                     value=q.client.stat_category,
                     choices=[
-                        ui.choice(name=col, label=col) for col in df.columns.values[1:]
+                        ui.choice(name=col, label=col) for col in df.columns.values[2:-1]
                     ],
                     width='300px',
                     trigger=True
@@ -191,7 +207,7 @@ def graph_view(q, df):
     
     q.page['graph_view']= ui.plot_card(
         box = 'data',
-        title=f'Player\'s {q.client.stat_category}',
+        title=f'{q.client.player}\'s {q.client.stat_category}',
         data=data(fields=df.columns.tolist(),rows = df.values.tolist()),
         plot = ui.plot(marks=[ui.mark(
             type='interval',
@@ -202,12 +218,3 @@ def graph_view(q, df):
         ),
         ])
     )
-
-
-
-                
-        
-
-
-
-
