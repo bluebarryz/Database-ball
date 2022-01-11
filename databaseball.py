@@ -44,7 +44,11 @@ async def serve(q:Q):
     print(q.args.stat_category, q.args.player_dropdown)
     if not q.client.initialized:
         initialize_ui(q)
-        player_dropdown(q)
+        q.client.stat_category = 'HR'
+        q.client.time = 'Age'
+        q.client.player = 'Ted Williams'
+        q.client.df = player_sheets[q.client.player]
+        q.client.df_qq = qq_sheets[q.client.player]
         graph_view(q, q.client.df)
         qq_table(q, q.client.df_qq)
 
@@ -113,14 +117,14 @@ def initialize_ui(q):
         ]
     )
     q.client.initialized = True
-    q.client.stat_category = 'HR'
-    q.client.time = 'Age'
-    q.client.player = 'Ted Williams'
-    q.client.df = player_sheets[q.client.player]
-    q.client.df_qq = qq_sheets[q.client.player]
+    
 
 
-def player_dropdown(q):
+
+
+
+
+def qq_table(q, df_qq):
     q.page['players'] = ui.form_card(
         box="players",
         items=[
@@ -136,9 +140,6 @@ def player_dropdown(q):
         ]
     )
 
-
-
-def qq_table(q, df_qq):
     q.page["qq_table"] = ui.form_card(
         box='qq_data', 
         items=[
@@ -153,6 +154,7 @@ def qq_table(q, df_qq):
                 downloadable = True,
             )
     ])
+
 
 def table_view(q, df):
     del q.page["graph_view"], q.page["statsDropdown"]
