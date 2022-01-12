@@ -41,9 +41,7 @@ for player in players:
 
 @app('/databaseball')
 async def serve(q:Q):
-    # print(q.args)
     if not q.client.initialized:
-        print("init")
         initialize_ui(q)
         q.client.stat_category = 'HR'
         q.client.time = 'Age'
@@ -53,33 +51,26 @@ async def serve(q:Q):
         graph_view(q, q.client.df)
         qq_table(q, q.client.df_qq)
     
-    print(q.args.player_dropdown, q.client.player)
     if q.args.player_dropdown == q.client.player:
         print("same")
         q.args.player_dropdown = None
 
-    # print(q.args.player_dropdown)
     if q.args.graph:
-        # print(q.args.graph, "graph")
         graph_view(q, q.client.df)   
     elif q.args.table:
-        # print(q.args.table, "table")
         table_view(q, q.client.df)    
     elif q.args.player_dropdown:
-        # print(q.args.player_dropdown, "player dropdown")
         q.client.player = q.args.player_dropdown
         q.client.df = player_sheets[q.client.player]
         q.client.df_qq = qq_sheets[q.client.player]
         graph_view(q, q.client.df)  
         qq_table(q, q.client.df_qq)
     elif q.args.stat_category or q.args.time:
-        # print("el")
         q.client.stat_category = q.args.stat_category
         q.client.time = q.args.time
         graph_view(q, q.client.df)
     
     q.args.player_dropdown = None 
-    # print(q.args.stat_category, q.args.player_dropdown)  
     await q.page.save()
         
 
