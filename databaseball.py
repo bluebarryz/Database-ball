@@ -3,7 +3,8 @@ import pandas as pd
 
 players = [["Ted Williams", "tedWil"], ["Mike Trout", 'trout']]
 stategories = ['Year', 'Age', 'Games', 'BA', 'HR', 'RBI', 'OBP', 'SLG', 'OPS', 'OPS_Plus', 'Awards']
-stategories_proper_text = [stat if stat != 'OPS_Plus' else 'OPS+' for stat in stategories]
+stategories_proper_text = dict(zip(stategories, 
+                                    [stat if stat != 'OPS_Plus' else 'OPS+' for stat in stategories]))
 
 
 """['Jackie Robinson', 'robinson'], 
@@ -52,7 +53,6 @@ async def serve(q:Q):
         qq_table(q, q.client.df_qq)
     
     if q.args.player_dropdown == q.client.player:
-        print("same")
         q.args.player_dropdown = None
 
     if q.args.graph:
@@ -88,8 +88,6 @@ def initialize_ui(q):
                             ui.zone('players'),
                             ui.zone('qq_data')
                         ]),
-
-                        # ui.zone('stats', size="70%"),
 
                         ui.zone('stats', size="70%", zones=[
                             ui.zone('tabs'),
@@ -165,7 +163,7 @@ def table_view(q, df):
         items=[
             ui.table(
                 name='table example',
-                columns=[ui.table_column(name=col, label=col) for col in stategories_proper_text],
+                columns=[ui.table_column(name=col, label=col) for col in stategories_proper_text.values()],
                 rows=[ui.table_row(
                     name=str(i),
                     cells=[str(df[col].values[i]) for col in df.columns]
@@ -188,7 +186,7 @@ def graph_view(q, df):
                     name='stat_category',
                     label='y-axis (Stat Category)',                   
                     choices=[
-                        ui.choice(name=col, label=col) for col in df.columns.values[2:-1]
+                        ui.choice(name=col, label=stategories_proper_text[col]) for col in df.columns.values[2:-1]
                     ],
                     width='300px',
                     trigger=True,
@@ -210,14 +208,14 @@ def graph_view(q, df):
 
     q.page['graph_view']= ui.plot_card(
         box = 'data',
-        title=f'{q.client.player}\'s {q.client.stat_category}',
+        title=f'{q.client.player}\'s {stategories_proper_text[q.client.stat_category]}',
         data=data(fields=df.columns.tolist(),rows = df.values.tolist()),
         plot = ui.plot(marks=[ui.mark(
             type='interval',
             x=f'={q.client.time}',
             y=f'=OPS',
             x_title=q.client.time,
-            y_title=q.client.stat_category
+            y_title=stategories_proper_text[q.client.stat_category]
         ),
         ])
     )
