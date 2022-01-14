@@ -10,7 +10,7 @@ The QQ Metric applies an "adjustment factor" to a player's [OPS+](https://www.ml
 
 <img src="images/qq_formula.png" alt="formula" width=514 height=107>
 
-The graph of the adjustment factor function (the (-2^-x+1)^6) part, with the x values multiplied by 112 in order to fit the graph in a smaller frame) looks like this:
+The graph of the adjustment factor function (the (-2^(-x/112)+1)^6) part, with the x values multiplied by 112 in order to fit the graph in a smaller frame) looks like this:
 
 <img src="readme/adjustment_function.png" alt="adjustment function graph" width=775 height=281>
 
