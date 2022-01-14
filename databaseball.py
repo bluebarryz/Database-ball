@@ -1,6 +1,11 @@
 from turtle import color
 from h2o_wave import main, app, Q, ui, data
 import pandas as pd
+import base64
+
+with open("images/qq_formula.png", "rb") as image_file:
+    encoded_string = base64.b64encode(image_file.read())
+image = encoded_string.decode('utf-8')
 
 players = [["Ted Williams", "tedWil"], ["Mike Trout", 'trout'], ['Jackie Robinson', 'robinson'], ['Albert Pujols', 'pujols'], ['Babe Ruth', 'ruth'], ['Hank Aaron', 'aaron'], ['Larry Walker', 'walker'], ['Tip O\'Neill', 'oneill']]
     
@@ -100,12 +105,18 @@ def initialize_ui(q):
 
                         ui.zone('stats', size="70%", zones=[
                             ui.zone('tabs'),
-                            ui.zone('data')
+                            ui.zone('data'),
+                            ui.zone('qq_description',direction=ui.ZoneDirection.ROW, zones=[
+                                ui.zone('qq_text',size='40%'),
+                                ui.zone('qq_formula')
+                            ]
+                            ),
+                            ui.zone('footer')
 
                         ]),
                         
                         ]),
-                    ui.zone('footer'),
+                    
                 ]
             )
         ]
@@ -127,6 +138,27 @@ def initialize_ui(q):
         ]
     )
     updateTabs(q)
+    q.page['qq_text'] = ui.markdown_card(
+        box='qq_text',
+        title='What is the \'Quality/Quantity\' Metric?',
+        content='''The QQ Metric rewards players who post a high OPS+ (aka the normalized version of OPS) 
+        over a large sample size (i.e. high number of Plate Appearences)'''
+    )
+
+    q.page['qq_formula'] = ui.image_card(
+        box='qq_formula',
+        title='Formula for QQ Metric',
+        type='png',
+        image=image
+    )
+
+    q.page['footer'] = ui.form_card(
+        box='footer', 
+        items=[
+            ui.text_m('Data courtesy of baseball-reference.com',
+            ),
+        ]
+    )
 
 
     q.client.initialized = True
@@ -160,7 +192,7 @@ def qq_table(q, df_qq):
                     name=str(i),
                     cells=[str(df_qq[col].values[i]) for col in df_qq.columns]
                 )
-                for i in range(len(df_qq))],
+                for i in range(len(df_qq)-2)],
                 downloadable = True,
             )
     ])
