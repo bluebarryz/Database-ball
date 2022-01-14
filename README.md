@@ -44,12 +44,12 @@ Here is Ted Williams' QQ Metric for each season of his career. This is the table
  
  The highest QQ Metric Williams posted in a season was in 1941, when he earned a whopping 204 QQ with a 235 OPS+ and 606 Plate Appearences. Based on the QQ Metric alone, I think this was Williams' best offensive season. It was also his best season based on offensive Wins Above Replacement (oWAR), so it's nice to see that our QQ Metric agrees with other measures of offensive performance. 
  
- Fun fact: Despite his otherwordly QQ Metric, Ted Williams did not end up winning MVP in 1941. That honour went to 'joltin Joe DiMaggio, who recorded a 163 QQ Metric, much lower than Williams' 204. In fact, Ted Williams also had DiMaggio beat [in a bunch of other stats too](https://www.baseball-reference.com/awards/awards_1941.shtml#all_AL_MVP_voting), like WAR, Home Runs, Batting Average, On-base Percentage, Slugging, and OPS (basically every important hitting stat we use today). But to be fair, a lot of these metrics didn't exist back then, so no one cared. And there's also the fact that DiMaggio's Yankees were way better than Williams' Red Sox that season, finishing first in the American League and winning the World Series.
+>Fun fact: Despite his otherwordly QQ Metric, Ted Williams did not end up winning MVP in 1941. That honour went to 'joltin Joe DiMaggio, who recorded a 163 QQ Metric, much lower than Williams' 204. In fact, Ted Williams also had DiMaggio beat [in a bunch of other stats too](https://www.baseball-reference.com/awards/awards_1941.shtml#all_AL_MVP_voting), like WAR, Home Runs, Batting Average, On-base Percentage, Slugging, and OPS (basically every important hitting stat we use today). But to be fair, a lot of these metrics didn't exist back then, so no one cared. And there's also the fact that DiMaggio's Yankees were way better than Williams' Red Sox that season, finishing first in the American League and winning the World Series.
  
 ## About the tech
 I decided to use [H2O Wave](https://wave.h2o.ai/docs/guide) to make this app because of its nice data visualization features. I also liked its functional programming model and thought it would be really fun to use.
 
-## How to Run the App
+## How to run the app
 -Install H2O Wave: https://wave.h2o.ai/docs/installation 
 
 -Open a separate terminal and enter ```wave run databaseball```
