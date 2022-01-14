@@ -75,7 +75,6 @@ async def serve(q:Q):
         q.client.time = q.args.time
         graph_view(q, q.client.df)
     
-    q.args.player_dropdown = None 
     await q.page.save()
         
 def updateTabs(q):
