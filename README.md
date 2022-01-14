@@ -53,3 +53,5 @@ I decided to use [H2O Wave](https://wave.h2o.ai/docs/guide) to make this app bec
 -Install H2O Wave: https://wave.h2o.ai/docs/installation 
 
 -Open a separate terminal and enter ```wave run databaseball```
+
+-Open http://localhost:10101/databaseball and enjoy
