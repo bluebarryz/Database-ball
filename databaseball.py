@@ -1,15 +1,15 @@
+from turtle import color
 from h2o_wave import main, app, Q, ui, data
 import pandas as pd
 
-players = [["Ted Williams", "tedWil"], ["Mike Trout", 'trout']]
-stategories = ['Year', 'Age', 'Games', 'BA', 'HR', 'RBI', 'OBP', 'SLG', 'OPS', 'OPS_Plus', 'Awards']
+players = [["Ted Williams", "tedWil"], ["Mike Trout", 'trout'], ['Jackie Robinson', 'robinson'], ['Albert Pujols', 'pujols'], ['Babe Ruth', 'ruth'], ['Hank Aaron', 'aaron'], ['Larry Walker', 'walker'], ['Tip O\'Neill', 'oneill']]
+    
+stategories = ['Year', 'Age', 'Games', 'PA', 'AB', 'H', 'BA', 'HR', 'RBI', 'OBP', 'SLG', 'OPS', 'OPS_Plus']
 stategories_proper_text = dict(zip(stategories, 
                                     [stat if stat != 'OPS_Plus' else 'OPS+' for stat in stategories]))
 
 
-"""['Jackie Robinson', 'robinson'], 
-    ['Albert Pujols', 'pujols'], ['Babe Ruth', 'ruth'], ['Hank Aaron', 'aaron'], 
-    ['Larry Walker', 'walker']]"""
+
 
 player_sheets = {}
 qq_sheets = {}
@@ -18,20 +18,20 @@ def load_data(file):
     data = pd.read_csv(f'player_data/{file}.csv', na_filter=False)
     return data
 
-def QQ_metric(ops_plus, games):
-    return round( ops_plus*(-2**(-(games/27))+1)**4 )
+def QQ_metric(ops_plus, pa):
+    return round( ops_plus*(-2**(-(pa/112))+1)**6 )
 
 for player in players:
     loaded_data = load_data(player[1])
     loaded_data = loaded_data.rename(columns={"G": "Games"})
-    player_sheets.setdefault(player[0], loaded_data.loc[:len(loaded_data)-3, stategories])
+    player_sheets.setdefault(player[0], loaded_data.loc[:len(loaded_data), stategories])
 
     qq_data = {
         "Year": player_sheets[player[0]]["Year"],
         "Age": player_sheets[player[0]]["Age"],
         "QQ Metric": [QQ_metric(a,b) for a,b in zip(player_sheets[player[0]]['OPS_Plus'], 
-                                                    player_sheets[player[0]]['Games'])],
-        "Games": player_sheets[player[0]]["Games"],
+                                                    player_sheets[player[0]]['PA'])],
+        "PA": player_sheets[player[0]]["PA"],
         "OPS+": player_sheets[player[0]]["OPS_Plus"],
         
     }
@@ -63,6 +63,7 @@ async def serve(q:Q):
         q.client.player = q.args.player_dropdown
         q.client.df = player_sheets[q.client.player]
         q.client.df_qq = qq_sheets[q.client.player]
+        updateTabs(q)
         graph_view(q, q.client.df)  
         qq_table(q, q.client.df_qq)
     elif q.args.stat_category or q.args.time:
@@ -73,7 +74,14 @@ async def serve(q:Q):
     q.args.player_dropdown = None 
     await q.page.save()
         
-
+def updateTabs(q):
+    q.page['tabs'] = ui.tab_card(
+    box = 'tabs',
+    items=[
+        ui.tab(name="graph", label="Graph View"),
+        ui.tab(name="table", label="Table View")
+    ]
+    )
 
 def initialize_ui(q):
     q.page['meta'] = ui.meta_card(
@@ -84,8 +92,9 @@ def initialize_ui(q):
                 zones=[
                     ui.zone('entirePage',  direction=ui.ZoneDirection.ROW, zones=[
                         ui.zone('universal', direction=ui.ZoneDirection.COLUMN, size="45%", zones=[
-                            ui.zone('header',size="15%"),
+                            ui.zone('header',size="10%"),
                             ui.zone('players'),
+                            ui.zone('qq_header', size = '10%'),
                             ui.zone('qq_data')
                         ]),
 
@@ -109,18 +118,19 @@ def initialize_ui(q):
         icon='Baseball',
         icon_color='$white',
     )
-
-    q.page['tabs'] = ui.tab_card(
-        box = 'tabs',
+    
+    q.page['qq_title'] = ui.form_card(
+        box='qq_header', 
         items=[
-            ui.tab(name="graph", label="Graph View"),
-            ui.tab(name="table", label="Table View")
+            ui.text_xl('Quality/Quantity (QQ Metric) performance timeline',
+            ),
         ]
     )
+    updateTabs(q)
+
+
     q.client.initialized = True
-
-
-
+    
 
 
 def qq_table(q, df_qq):
@@ -186,7 +196,7 @@ def graph_view(q, df):
                     name='stat_category',
                     label='y-axis (Stat Category)',                   
                     choices=[
-                        ui.choice(name=col, label=stategories_proper_text[col]) for col in df.columns.values[2:-1]
+                        ui.choice(name=col, label=stategories_proper_text[col]) for col in df.columns.values[2:]
                     ],
                     width='300px',
                     trigger=True,
@@ -209,11 +219,11 @@ def graph_view(q, df):
     q.page['graph_view']= ui.plot_card(
         box = 'data',
         title=f'{q.client.player}\'s {stategories_proper_text[q.client.stat_category]}',
-        data=data(fields=df.columns.tolist(),rows = df.values.tolist()),
+        data=data(fields=df.columns.tolist(),rows = df.values.tolist()[:-2]),
         plot = ui.plot(marks=[ui.mark(
             type='interval',
             x=f'={q.client.time}',
-            y=f'=OPS',
+            y=f'={q.client.stat_category}',
             x_title=q.client.time,
             y_title=stategories_proper_text[q.client.stat_category]
         ),
