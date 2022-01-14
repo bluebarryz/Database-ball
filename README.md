@@ -7,4 +7,4 @@ Database-ball provides an interactive way of analyzing all kinds of baseball sta
   
   
 ## About the tech
-I decided to use [H2O Wave](https://wave.h2o.ai/docs/guide) to make this app because of its nice data visualization features. I also liked its functional programming model and decided to explore it in greater detail.
+I decided to use [H2O Wave](https://wave.h2o.ai/docs/guide) to make this app because of its nice data visualization features. I also liked its functional programming model and thought it would be really fun to use.
