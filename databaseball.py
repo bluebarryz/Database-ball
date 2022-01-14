@@ -1,4 +1,3 @@
-from turtle import color
 from h2o_wave import main, app, Q, ui, data
 import pandas as pd
 import base64
