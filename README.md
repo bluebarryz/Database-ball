@@ -5,7 +5,7 @@
 ## About <i>Database-ball</i>
 Database-ball provides an interactive way of analyzing all kinds of baseball statistics, from your traditional ones like batting average, home runs, and RBIs, to more advanced ones like slugging, OPS, and OPS+, to an even cooler one I created myself: the **Quality/Quantity (QQ) Metric**.
 
-## The <i>Quality/Quantity (QQ) Metric</i>
+## My Stat: The <i>Quality/Quantity (QQ) Metric</i>
 The QQ Metric applies an "adjustment factor" to a player's [OPS+](https://www.mlb.com/glossary/advanced-stats/on-base-plus-slugging-plus) (a normalized stat measuring offensive performance) based on how many plate appearences they had. This rewards players who provide both "Quality" and "Quantity" in abundance. Here is how it's calculated:
 
 <img src="images/qq_formula.png" alt="formula" width=514 height=107>
