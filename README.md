@@ -12,7 +12,7 @@ The QQ Metric applies an "adjustment factor" to a player's [OPS+](https://www.ml
 
 The graph of the adjustment factor function (the (-2^-x+1)^6) part, with the x values multiplied by 112) looks like this:
 
-<img src="readme/qq_graph.png" alt="qq_graph" width=514 height=107>
+<img src="readme/adjustment_function.png" alt="adjustment function graph" width=775 height=281>
 
 As you can see, the curve flattens out as x increases, so the adjustment factor changes less dramatically for players with a high number of plate appearences.
  
