@@ -17,7 +17,7 @@ The graph of the adjustment factor function (the (-2^-x+1)^6) part, with the x v
 As you can see, the curve flattens out as x increases, so the adjustment factor changes less dramatically for players with a high number of plate appearences.
 
 ## Examples of the QQ Metric in action
-Here is Ted Williams' QQ Metric for each season of his career.
+Here is Ted Williams' QQ Metric for each season of his career. This is the table displayed on the left side of the dashboard in the first image.
 | Year | Age | QQ Metric | PA | OPS+ |
 |------|-----|-----------|----|------|
 | 1939 | 20 | 146 | 677 | 160 |
@@ -39,6 +39,12 @@ Here is Ted Williams' QQ Metric for each season of his career.
  | 1958 | 39 | 139 | 517 | 179 |
  | 1959 | 40 | 50 | 331 | 114 |
  | 1960 | 41 | 108 | 390 | 190 |
-  
+ 
+ Ted Williams' highest OPS+ in a season was 273, back in 1952. However, he only had 12 Plate Appearences (and 6 games played) that season. So his QQ Metric for that season, rounded to the nearest integer, was actually 0. To have a decent QQ Metric, you need a larger sample size!
+ 
+ The highest QQ Metric Williams posted in a season was in 1941, when he earned a whopping 204 QQ with a 235 OPS+ and 606 Plate Appearences. Based on the QQ Metric alone, I think this was Williams' best offensive season. It was also his best season based on offensive Wins Above Replacement (oWAR), so it's nice to see that our QQ Metric agrees with other measures of offensive performance. 
+ 
+ Fun fact: Despite his otherwordly QQ Metric, Ted Williams did not end up winning MVP in 1941. That honour went to 'joltin Joe DiMaggio, who recorded a 163 QQ Metric, much lower than Williams' 204. In fact, Ted Williams also had DiMaggio beat [in a bunch of other stats too](https://www.baseball-reference.com/awards/awards_1941.shtml#all_AL_MVP_voting), like WAR, Home Runs, Batting Average, On-base Percentage, Slugging, and OPS (basically every important hitting stat we use today). But to be fair, a lot of these metrics didn't exist back then, so no one cared. And there's also the fact that DiMaggio's Yankees were way better than Williams' Red Sox that season, finishing first in the American League and winning the World Series.
+ 
 ## About the tech
 I decided to use [H2O Wave](https://wave.h2o.ai/docs/guide) to make this app because of its nice data visualization features. I also liked its functional programming model and thought it would be really fun to use.
