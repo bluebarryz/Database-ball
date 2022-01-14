@@ -40,7 +40,7 @@ Here is Ted Williams' QQ Metric for each season of his career. This is the table
  | 1959 | 40 | 50 | 331 | 114 |
  | 1960 | 41 | 108 | 390 | 190 |
  
- Ted Williams' highest OPS+ in a season was 273, back in 1952. However, he only had 12 Plate Appearences (and 6 games played) that season. So his QQ Metric for that season, rounded to the nearest integer, was actually 0. To have a decent QQ Metric, you need a larger sample size!
+ Ted Williams' highest OPS+ in a season was 273, back in 1952. However, he only had 12 Plate Appearences (and 6 games played) that season. So his QQ Metric in 1952, rounded to the nearest integer, was actually 0. To have a decent QQ Metric, you need a larger sample size!
  
  The highest QQ Metric Williams posted in a season was in 1941, when he earned a whopping 204 QQ with a 235 OPS+ and 606 Plate Appearences. Based on the QQ Metric alone, I think this was Williams' best offensive season. It was also his best season based on offensive Wins Above Replacement (oWAR), so it's nice to see that our QQ Metric agrees with other measures of offensive performance. 
  
