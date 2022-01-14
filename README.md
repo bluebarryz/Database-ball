@@ -48,3 +48,7 @@ Here is Ted Williams' QQ Metric for each season of his career. This is the table
  
 ## About the tech
 I decided to use [H2O Wave](https://wave.h2o.ai/docs/guide) to make this app because of its nice data visualization features. I also liked its functional programming model and thought it would be really fun to use.
+
+## How to Run the App
+-Install H2O Wave: https://wave.h2o.ai/docs/installation
+-Open a separate terminal and enter ```wave run databaseball```
