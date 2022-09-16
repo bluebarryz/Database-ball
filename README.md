@@ -2,6 +2,9 @@
 
 <img src="readme/default-view.png" alt="default-view" width=961 height=423> 
 
+## Demo
+<p>https://database-ball.herokuapp.com/databaseball</p>
+
 ## About <i>Database-ball</i>
 Database-ball provides an interactive way of analyzing all kinds of baseball statistics, from your traditional ones like batting average, home runs, and RBIs, to more advanced ones like slugging, OPS, and OPS+, to an even cooler one I created myself: the **Quality/Quantity (QQ) Metric**.
 
